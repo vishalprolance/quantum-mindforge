@@ -23,7 +23,7 @@ const Canvas = () => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [nodes, setNodes] = useState<Node[]>([]);
-  const isInView = useIntersectionObserver(containerRef, { threshold: 0.1 });
+  const isInView = useIntersectionObserver(containerRef, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
   const [isVisible, setIsVisible] = useState(false);
   
   // Sample nodes
