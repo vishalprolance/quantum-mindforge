@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Canvas from '@/components/Canvas';
 import Features from '@/components/Features';
+import DemoVideo from '@/components/DemoVideo';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -41,6 +42,7 @@ const Index = () => {
         <Hero />
         <Canvas />
         <Features />
+        <DemoVideo />
       </main>
       <Footer />
     </div>

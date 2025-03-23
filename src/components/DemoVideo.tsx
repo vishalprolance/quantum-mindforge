@@ -1,0 +1,103 @@
+
+import { useRef } from 'react';
+import { cn } from '@/lib/utils';
+import { PlayCircle, Monitor, BrainCircuit, Network } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useIntersectionObserver } from '@/lib/animations';
+
+const DemoVideo = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const isInView = useIntersectionObserver(sectionRef, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+  const isVideoInView = useIntersectionObserver(videoRef, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+  
+  return (
+    <section 
+      id="demo" 
+      className="py-24 px-6 relative overflow-hidden"
+      ref={sectionRef}
+    >
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-noise opacity-[0.015] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-400/10 rounded-full filter blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-400/10 rounded-full filter blur-3xl" />
+      
+      <div className="max-w-7xl mx-auto">
+        <div className={cn(
+          "text-center mb-12 transition-all duration-700",
+          isInView ? "opacity-100" : "opacity-0 translate-y-10"
+        )}>
+          <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4">
+            <Monitor size={14} className="mr-1.5" />
+            <span>See It In Action</span>
+          </div>
+          <h2 className="heading-lg mb-4">How Quantum Mindforge Works</h2>
+          <p className="body-md max-w-2xl mx-auto">
+            Watch how our platform transforms the way you think, connect ideas, and discover new insights.
+          </p>
+        </div>
+        
+        <div 
+          ref={videoRef}
+          className={cn(
+            "relative rounded-2xl overflow-hidden glass-panel transition-all duration-700 aspect-video max-w-4xl mx-auto",
+            isVideoInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}
+        >
+          {/* Placeholder for the actual video */}
+          <div className="absolute inset-0 bg-black/10 flex flex-col items-center justify-center text-center p-6">
+            <BrainCircuit size={56} className="text-primary mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Quantum Mindforge Demo</h3>
+            <p className="text-muted-foreground max-w-lg mb-6">
+              This demo showcases how to map your thoughts, connect ideas, and discover new insights using our interactive canvas.
+            </p>
+            
+            <Button className="bg-primary hover:bg-primary/90">
+              <PlayCircle size={20} className="mr-2" />
+              Watch Demo
+            </Button>
+            
+            <div className="absolute inset-x-0 bottom-6 flex justify-center space-x-8 text-sm text-muted-foreground">
+              <div className="flex items-center">
+                <Network size={16} className="mr-1.5" />
+                <span>Thought Mapping</span>
+              </div>
+              <div className="flex items-center">
+                <BrainCircuit size={16} className="mr-1.5" />
+                <span>Neural Connections</span>
+              </div>
+              <div className="flex items-center">
+                <Monitor size={16} className="mr-1.5" />
+                <span>Interface Tutorial</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Uncomment and use this when you have an actual video */}
+          {/* 
+          <video 
+            className="w-full h-full object-cover"
+            controls
+            poster="/video-thumbnail.jpg"
+          >
+            <source src="/demo-video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          */}
+        </div>
+        
+        <div className={cn(
+          "mt-8 text-center transition-all duration-700 delay-300",
+          isVideoInView ? "opacity-100" : "opacity-0"
+        )}>
+          <p className="text-sm text-muted-foreground">
+            This demonstration covers the core features of Quantum Mindforge including thought mapping, 
+            neural connections, and dimensional thinking.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default DemoVideo;
