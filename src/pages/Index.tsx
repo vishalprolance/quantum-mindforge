@@ -27,9 +27,13 @@ const Index = () => {
       
       if (element) {
         e.preventDefault();
-        element.scrollIntoView({
+        const navbarHeight = 80; // Approximate height of the navbar
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+        
+        window.scrollTo({
+          top: offsetPosition,
           behavior: 'smooth',
-          block: 'start',
         });
       }
     };

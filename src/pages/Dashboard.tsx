@@ -78,7 +78,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow p-6">
+      <main className="flex-grow p-6 pt-24 md:pt-24">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -113,9 +113,12 @@ const Dashboard = () => {
               
               <ResizablePanel defaultSize={40} minSize={25}>
                 <InputPanel onGenerateMap={(data) => {
-                  // This will be implemented to pass data to the ThoughtCanvas
+                  // This will pass data to the ThoughtCanvas
                   if (canvasRef.current) {
                     // Forward the generated data to the canvas component
+                    // @ts-ignore - we know the ref has this method
+                    canvasRef.current.importMindMap(data);
+                    
                     toast({
                       title: "Mind map generated",
                       description: "Your content has been transformed into a mind map"

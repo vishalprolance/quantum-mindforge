@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { createParticles } from '@/lib/animations';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Brain, Zap } from 'lucide-react';
+import ComplexMindMap from './ComplexMindMap';
 
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,20 +40,20 @@ const Hero = () => {
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-400/10 rounded-full filter blur-3xl animate-float opacity-50" style={{ animationDelay: '-3s' }} />
       
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-8 animate-fade-in">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center space-y-8 animate-fade-in pt-24 md:pt-32">
         {/* Pill badge */}
         <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4 animate-scale-in">
           <Sparkles size={14} className="mr-1.5" />
           <span>Introducing Quantum Mindforge</span>
         </div>
         
-        <h1 className="heading-xl">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
           <span className="text-foreground">Expand Your Mind With</span>
           <br />
           <span className="text-primary">Quantum Thinking</span>
         </h1>
         
-        <p className="body-lg max-w-2xl mx-auto mt-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
+        <p className="text-lg md:text-xl max-w-2xl mx-auto mt-6 text-muted-foreground animate-slide-up" style={{ animationDelay: '200ms' }}>
           Explore the frontiers of your cognitive potential with our revolutionary thought visualization platform. Quantum Mindforge helps you visualize complex ideas, discover new connections, and elevate your thinking to new dimensions.
         </p>
         
@@ -82,6 +83,15 @@ const Hero = () => {
             </svg>
             Quantum Connections
           </span>
+        </div>
+        
+        {/* Complex Mind Map Example */}
+        <div className="mt-16 pb-12">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6">Visualize Your Quantum Thoughts</h2>
+          <p className="text-base text-muted-foreground max-w-3xl mx-auto mb-8">
+            Explore the interconnections between ideas in this interactive canvas. Drag to navigate, zoom to focus, and witness how thoughts connect in unexpected ways.
+          </p>
+          <ComplexMindMap />
         </div>
       </div>
       
