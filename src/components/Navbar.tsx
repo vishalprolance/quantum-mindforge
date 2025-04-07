@@ -3,14 +3,16 @@ import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LogOut } from 'lucide-react';
+import { Menu, X, LogOut, Sun, Moon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('theme') === 'dark');
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -26,6 +28,34 @@ const Navbar = () => {
       setIsLoggedIn(false);
     }
   }, [location.pathname]);
+  
+  // Initialize dark mode
+  useEffect(() => {
+    // Check for saved preference or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      document.documentElement.classList.add('dark');
+      setDarkMode(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      setDarkMode(false);
+    }
+  }, []);
+  
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    if (darkMode) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setDarkMode(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setDarkMode(true);
+    }
+  };
   
   // Update scroll state
   useEffect(() => {
@@ -54,10 +84,24 @@ const Navbar = () => {
     navigate('/');
   };
   
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const navbarHeight = 80; // Approximate height of the navbar
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+  
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Features', path: '/#features' },
-    { name: 'Demo', path: '/#demo' },
+    { name: 'Features', path: '/#features', action: () => scrollToSection('features') },
+    { name: 'Demo', path: '/#demo', action: () => scrollToSection('demo') },
     { name: 'Pricing', path: '/pricing' },
   ];
   
@@ -103,23 +147,61 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={cn(
-                'px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                isActive(link.path)
-                  ? 'text-primary'
-                  : 'text-foreground/70 hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
-              )}
-            >
-              {link.name}
-            </Link>
+            link.action ? (
+              <button
+                key={link.path}
+                onClick={link.action}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                  isActive(link.path)
+                    ? 'text-primary'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                )}
+              >
+                {link.name}
+              </button>
+            ) : (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                  isActive(link.path)
+                    ? 'text-primary'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                )}
+              >
+                {link.name}
+              </Link>
+            )
           ))}
         </nav>
         
-        {/* CTA Button or User Menu */}
+        {/* Dark Mode Toggle + CTA Button or User Menu */}
         <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center space-x-2 border border-gray-200 dark:border-gray-800 p-1 rounded-full">
+            <button 
+              onClick={toggleDarkMode} 
+              className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                !darkMode ? "bg-primary/10 text-primary" : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
+              )}
+              aria-label="Light mode"
+            >
+              <Sun size={16} />
+            </button>
+            <button 
+              onClick={toggleDarkMode} 
+              className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                darkMode ? "bg-primary/10 text-primary" : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
+              )}
+              aria-label="Dark mode"
+            >
+              <Moon size={16} />
+            </button>
+          </div>
+          
           {isLoggedIn ? (
             <>
               <span className="text-sm">Hi, {username}</span>
@@ -143,13 +225,24 @@ const Navbar = () => {
         </div>
         
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-foreground p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center space-x-3">
+          {/* Dark mode toggle for mobile */}
+          <button
+            onClick={toggleDarkMode}
+            className="text-foreground p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-foreground p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
       
       {/* Mobile Menu */}
@@ -161,19 +254,37 @@ const Navbar = () => {
       >
         <nav className="flex flex-col space-y-4">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={cn(
-                'px-4 py-3 rounded-md text-base font-medium transition-colors',
-                isActive(link.path)
-                  ? 'text-primary bg-primary/10'
-                  : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
+            link.action ? (
+              <button
+                key={link.path}
+                onClick={() => {
+                  link.action?.();
+                  setIsMobileMenuOpen(false);
+                }}
+                className={cn(
+                  'px-4 py-3 rounded-md text-base font-medium transition-colors',
+                  isActive(link.path)
+                    ? 'text-primary bg-primary/10'
+                    : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
+                )}
+              >
+                {link.name}
+              </button>
+            ) : (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={cn(
+                  'px-4 py-3 rounded-md text-base font-medium transition-colors',
+                  isActive(link.path)
+                    ? 'text-primary bg-primary/10'
+                    : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
+                )}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            )
           ))}
         </nav>
         <div className="mt-6 space-y-3">

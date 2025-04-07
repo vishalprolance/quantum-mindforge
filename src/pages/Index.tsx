@@ -11,7 +11,19 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const { toast } = useToast();
   
-  // Smooth scroll behavior for anchor links
+  // Initialize dark mode based on system preference or saved setting
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+  
+  // Smooth scroll behavior for anchor links and handle "features" and "demo" navigation
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;

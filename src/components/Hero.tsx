@@ -4,9 +4,13 @@ import { createParticles } from '@/lib/animations';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Brain, Zap } from 'lucide-react';
 import ComplexMindMap from './ComplexMindMap';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const Hero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -22,6 +26,20 @@ const Hero = () => {
     
     return cleanup;
   }, []);
+  
+  const handleStartJourney = () => {
+    const isLoggedIn = localStorage.getItem('user') !== null;
+    
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signin');
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to start your journey"
+      });
+    }
+  };
   
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden">
@@ -58,11 +76,30 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-slide-up" style={{ animationDelay: '400ms' }}>
-          <Button className="h-12 px-6 text-base font-medium bg-primary hover:bg-primary/90 text-white transition-all duration-300 group">
+          <Button 
+            className="h-12 px-6 text-base font-medium bg-primary hover:bg-primary/90 text-white transition-all duration-300 group"
+            onClick={handleStartJourney}
+          >
             Start Your Journey
             <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
           </Button>
-          <Button variant="outline" className="h-12 px-6 text-base font-medium border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300">
+          <Button 
+            variant="outline" 
+            className="h-12 px-6 text-base font-medium border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
+            onClick={() => {
+              const demoSection = document.getElementById('demo');
+              if (demoSection) {
+                const navbarHeight = 80;
+                const elementPosition = demoSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+                
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: 'smooth',
+                });
+              }
+            }}
+          >
             Watch Demo
           </Button>
         </div>

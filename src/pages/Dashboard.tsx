@@ -17,6 +17,14 @@ const Dashboard = () => {
   const canvasRef = useRef(null);
   
   useEffect(() => {
+    // Initialize dark mode
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
     // Simulating check if user is signed in
     const isSignedIn = localStorage.getItem('user') !== null;
     

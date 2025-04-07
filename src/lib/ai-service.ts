@@ -23,6 +23,27 @@ export interface MindMapData {
   connections: MindMapConnection[];
 }
 
+// Filter for harmful content
+const filterHarmfulContent = (text: string): string => {
+  // This is a simple implementation
+  // In a production environment, you would use a more sophisticated content filtering system
+  const harmfulTerms = [
+    'kill', 'murder', 'suicide', 'terrorist', 'bomb', 'shoot', 'attack', 'hate',
+    'racist', 'sexist', 'nazi', 'pornography', 'explicit', 'violence', 'threat',
+    'harmful', 'illegal', 'weapon', 'drugs', 'abuse'
+  ];
+  
+  let filteredText = text;
+  
+  // Check for harmful terms
+  harmfulTerms.forEach(term => {
+    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+    filteredText = filteredText.replace(regex, '[filtered]');
+  });
+  
+  return filteredText;
+};
+
 // Function to generate a mind map using Google Gemini API
 export const generateMindMap = async (
   text: string, 
@@ -35,6 +56,9 @@ export const generateMindMap = async (
       description: "Analyzing content and generating mind map..."
     });
     
+    // Apply content filtering
+    const filteredText = filterHarmfulContent(text);
+    
     // Read files content if any
     const fileContents = await Promise.all(
       files.map(async file => {
@@ -43,7 +67,8 @@ export const generateMindMap = async (
           return `[Image file: ${file.name}]`;
         }
         try {
-          return await readFileAsText(file);
+          const content = await readFileAsText(file);
+          return filterHarmfulContent(content);
         } catch (err) {
           console.error(`Error reading file ${file.name}:`, err);
           return `[Error reading file: ${file.name}]`;
@@ -52,14 +77,53 @@ export const generateMindMap = async (
     );
     
     // Combine text and file contents
-    const combinedInput = [text, ...fileContents].filter(Boolean).join('\n\n');
+    const combinedInput = [filteredText, ...fileContents].filter(Boolean).join('\n\n');
     
     // In a production environment, you would send this to a backend API
-    // that would call the Gemini API with your API key
+    // with a strong system prompt for generating mind maps
+    const systemPrompt = `
+      You are an expert knowledge graph creator specialized in creating educational and insightful mind maps.
+      Your task is to:
+      
+      1. Analyze the provided content and identify key concepts, themes, and their relationships.
+      2. Organize these concepts into a hierarchical structure with a central theme and related subtopics.
+      3. Create meaningful connections between concepts that show how ideas relate to each other.
+      4. Format your response as a JSON object that represents a comprehensive mind map, following this structure:
+      
+      {
+        "nodes": [
+          {
+            "id": "string",
+            "content": "string",
+            "x": number, // position from 0-100
+            "y": number, // position from 0-100
+            "color": "string", // Tailwind CSS class
+            "shape": "rectangle" | "circle" | "triangle"
+          }
+        ],
+        "connections": [
+          {
+            "id": "string",
+            "sourceId": "string",
+            "targetId": "string"
+          }
+        ]
+      }
+      
+      Design the mind map to be clearly organized, visually coherent, and intellectually stimulating.
+      Avoid creating maps that are too sparse or too dense.
+      Use positioning intelligently to create a clear visual hierarchy.
+      Ensure all text is concise and focused on key concepts.
+      
+      Content to analyze:
+      ${combinedInput}
+    `;
+    
+    console.log("System prompt for mind map generation:", systemPrompt);
     
     // For demo purposes, we'll use a mock response
     // In a real implementation with proper backend, we'd call something like:
-    // const response = await callGeminiApi(combinedInput);
+    // const response = await callGeminiApi(combinedInput, systemPrompt);
     
     let mockResponse: MindMapData;
     
@@ -69,6 +133,14 @@ export const generateMindMap = async (
     } else {
       mockResponse = generateSimpleMockMindMap(combinedInput);
     }
+    
+    // Add a short delay to simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    toast({
+      title: "Mind map generated",
+      description: "Your content has been transformed into a visual knowledge graph"
+    });
     
     return mockResponse;
   } catch (error) {
@@ -297,55 +369,47 @@ const extractKeywords = (text: string, count: number): string[] => {
     .map(([word]) => word);
 };
 
-// This would be your backend implementation for calling the Gemini API
-// It's commented out because it would require backend code to securely use the API key
+// Function that would be implemented for backend API calls
+// This is just a placeholder for demonstration purposes
 /*
-const callGeminiApi = async (input: string) => {
+const callGeminiApi = async (input: string, systemPrompt: string) => {
   try {
-    // In a real implementation, this would be a fetch call to your backend
-    // that securely uses the API key
-    const prompt = `
-      Create a mind map based on the following content.
-      Generate it as a JSON object with the following structure:
-      {
-        "nodes": [
-          {
-            "id": "string",
-            "content": "string",
-            "x": number, // position from 0-100
-            "y": number, // position from 0-100
-            "color": "string", // Tailwind CSS class
-            "shape": "rectangle" | "circle" | "triangle"
-          }
-        ],
-        "connections": [
-          {
-            "id": "string",
-            "sourceId": "string",
-            "targetId": "string"
-          }
-        ]
-      }
-      
-      Content to analyze:
-      ${input}
-    `;
+    const response = await fetch('/api/generate-mind-map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input, systemPrompt })
+    });
     
-    // In a real application, this would call your backend API
-    // const response = await fetch('/api/generate-mind-map', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ prompt })
-    // });
-    // 
-    // const data = await response.json();
-    // return data;
+    const data = await response.json();
     
-    // For now, return a mock response
-    return generateComplexMockMindMap(input);
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to generate mind map');
+    }
+    
+    return data;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
     throw error;
+  }
+};
+*/
+
+// Placeholder for content moderation function
+// In a real application, this would use a more sophisticated system or API
+/*
+const moderateContent = async (text: string): Promise<{isSafe: boolean, filteredText: string}> => {
+  try {
+    const response = await fetch('/api/moderate-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error moderating content:", error);
+    // Default to allowing content but logging the error
+    return { isSafe: true, filteredText: text };
   }
 };
 */
