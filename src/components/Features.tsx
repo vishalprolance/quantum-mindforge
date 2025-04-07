@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { Brain, Zap, Network, Hexagon, Activity, MousePointerClick } from 'lucide-react';
+import { Brain, Wand, Network, Hexagon, Activity, MousePointerClick, FileText, Palette } from 'lucide-react';
 import { useIntersectionObserver } from '@/lib/animations';
 
 type FeatureProps = {
@@ -48,37 +48,37 @@ const Features = () => {
     {
       icon: <Brain size={24} />,
       title: "Neural Mapping",
-      description: "Visualize your thought patterns and discover how your ideas connect to form deeper insights.",
+      description: "Visualize your thought patterns and discover how your ideas connect to form deeper insights with our advanced neural mapping technology.",
       delay: 0
     },
     {
-      icon: <Zap size={24} />,
-      title: "Thought Acceleration",
-      description: "Rapidly generate new connections between concepts to inspire creative breakthroughs.",
+      icon: <Wand size={24} />,
+      title: "AI-Powered Generation",
+      description: "Let our advanced AI analyze your content and automatically create structured mind maps, saving you time and revealing new connections.",
       delay: 100
     },
     {
       icon: <Network size={24} />,
       title: "Quantum Connections",
-      description: "Discover non-linear relationships between seemingly unrelated ideas and concepts.",
+      description: "Discover non-linear relationships between seemingly unrelated ideas and concepts with our intelligent connection algorithms.",
       delay: 200
     },
     {
-      icon: <Hexagon size={24} />,
-      title: "Dimensional Thinking",
-      description: "Expand beyond linear thought patterns to explore multiple dimensions of understanding.",
+      icon: <FileText size={24} />,
+      title: "Multi-Format Input",
+      description: "Import your thoughts from text, documents, code, images, or voice recordings to create comprehensive mind maps from any source material.",
       delay: 300
     },
     {
-      icon: <Activity size={24} />,
-      title: "Cognitive Enhancement",
-      description: "Train your brain to recognize patterns and make connections more effectively over time.",
+      icon: <Palette size={24} />,
+      title: "Visual Customization",
+      description: "Personalize your mind maps with different shapes, colors, and layouts to create visually appealing and intuitive thought diagrams.",
       delay: 400
     },
     {
       icon: <MousePointerClick size={24} />,
       title: "Intuitive Interface",
-      description: "An elegant, responsive design that makes complex thought visualization feel natural.",
+      description: "An elegant, responsive design that makes complex thought visualization feel natural with our smooth drag-and-drop experience.",
       delay: 500
     }
   ];
@@ -101,7 +101,7 @@ const Features = () => {
         )}>
           <h2 className="heading-lg mb-4">Powerful Features</h2>
           <p className="body-md max-w-2xl mx-auto">
-            Quantum Mindforge combines advanced cognitive science with elegant interface design
+            Quantum Mindforge combines advanced cognitive science with AI technology and elegant interface design
             to help you think in new dimensions.
           </p>
         </div>

@@ -1,9 +1,11 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ThoughtCanvas from '@/components/ThoughtCanvas';
+import InputPanel from '@/components/InputPanel';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { PlusCircle, Save, DownloadCloud, Share2 } from 'lucide-react';
@@ -12,6 +14,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [saveStatus, setSaveStatus] = useState("saved");
   const [projectName, setProjectName] = useState("My Thought Map");
+  const canvasRef = useRef(null);
   
   useEffect(() => {
     // Simulating check if user is signed in
@@ -101,14 +104,26 @@ const Dashboard = () => {
           </div>
           
           <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 h-[calc(100vh-240px)] overflow-hidden">
-            <ThoughtCanvas />
-          </div>
-          
-          <div className="mt-4 flex justify-center">
-            <Button variant="outline" className="rounded-full">
-              <PlusCircle size={20} className="mr-2" />
-              Add New Thought
-            </Button>
+            <ResizablePanelGroup direction="horizontal">
+              <ResizablePanel defaultSize={60} minSize={30}>
+                <ThoughtCanvas ref={canvasRef} />
+              </ResizablePanel>
+              
+              <ResizableHandle withHandle />
+              
+              <ResizablePanel defaultSize={40} minSize={25}>
+                <InputPanel onGenerateMap={(data) => {
+                  // This will be implemented to pass data to the ThoughtCanvas
+                  if (canvasRef.current) {
+                    // Forward the generated data to the canvas component
+                    toast({
+                      title: "Mind map generated",
+                      description: "Your content has been transformed into a mind map"
+                    });
+                  }
+                }} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
         </div>
       </main>

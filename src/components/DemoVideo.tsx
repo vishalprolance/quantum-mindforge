@@ -1,7 +1,7 @@
 
 import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { PlayCircle, Monitor, BrainCircuit, Network } from 'lucide-react';
+import { PlayCircle, Monitor, BrainCircuit, Network, Upload, Wand, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIntersectionObserver } from '@/lib/animations';
 
@@ -42,7 +42,7 @@ const DemoVideo = () => {
           </div>
           <h2 className="heading-lg mb-4">How Quantum Mindforge Works</h2>
           <p className="body-md max-w-2xl mx-auto">
-            Watch how our platform transforms the way you think, connect ideas, and discover new insights.
+            Watch how our platform transforms the way you think, connect ideas, and discover new insights using advanced AI.
           </p>
         </div>
         
@@ -58,7 +58,7 @@ const DemoVideo = () => {
               <BrainCircuit size={56} className="text-white mb-4" />
               <h3 className="text-xl font-semibold mb-2 text-white">Quantum Mindforge Demo</h3>
               <p className="text-white/90 max-w-lg mb-6">
-                This demo showcases how to map your thoughts, connect ideas, and discover new insights using our interactive canvas.
+                This demo showcases how to map your thoughts, connect ideas, and use AI to transform your content into visual mind maps.
               </p>
               
               <Button 
@@ -72,15 +72,15 @@ const DemoVideo = () => {
               <div className="absolute inset-x-0 bottom-6 flex justify-center space-x-8 text-sm text-white/80">
                 <div className="flex items-center">
                   <Network size={16} className="mr-1.5" />
-                  <span>Thought Mapping</span>
+                  <span>Mind Mapping</span>
                 </div>
                 <div className="flex items-center">
-                  <BrainCircuit size={16} className="mr-1.5" />
-                  <span>Neural Connections</span>
+                  <Wand size={16} className="mr-1.5" />
+                  <span>AI Generation</span>
                 </div>
                 <div className="flex items-center">
-                  <Monitor size={16} className="mr-1.5" />
-                  <span>Interface Tutorial</span>
+                  <FileText size={16} className="mr-1.5" />
+                  <span>Content Processing</span>
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@ const DemoVideo = () => {
               className="w-full h-full object-cover"
               controls
               autoPlay
-              poster="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1280"
+              poster="/lovable-uploads/c6415b59-4fa2-48b5-a3a1-ee99034b4966.png"
             >
               {/* For demo purposes, we'll use a sample video */}
               <source 
@@ -102,14 +102,45 @@ const DemoVideo = () => {
           )}
         </div>
         
-        <div className={cn(
-          "mt-8 text-center transition-all duration-700 delay-300",
-          isVideoInView ? "opacity-100" : "opacity-0"
-        )}>
-          <p className="text-sm text-muted-foreground">
-            This demonstration covers the core features of Quantum Mindforge including thought mapping, 
-            neural connections, and dimensional thinking.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
+          <div className={cn(
+            "transition-all duration-700 delay-100 glass-panel p-6 rounded-xl border border-gray-200 dark:border-gray-800",
+            isVideoInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}>
+            <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4 text-purple-600">
+              <Network size={24} />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Interactive Mind Mapping</h3>
+            <p className="text-sm text-muted-foreground">
+              Create connections between ideas with our intuitive drag-and-drop interface. Visualize complex thoughts in a structured, organized way.
+            </p>
+          </div>
+          
+          <div className={cn(
+            "transition-all duration-700 delay-200 glass-panel p-6 rounded-xl border border-gray-200 dark:border-gray-800",
+            isVideoInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}>
+            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4 text-blue-600">
+              <Wand size={24} />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">AI-Powered Generation</h3>
+            <p className="text-sm text-muted-foreground">
+              Leverage advanced AI models to automatically generate mind maps from your text, documents, or spoken input. Save time and discover new connections.
+            </p>
+          </div>
+          
+          <div className={cn(
+            "transition-all duration-700 delay-300 glass-panel p-6 rounded-xl border border-gray-200 dark:border-gray-800",
+            isVideoInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}>
+            <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center mb-4 text-amber-600">
+              <Upload size={24} />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Multi-Format Input</h3>
+            <p className="text-sm text-muted-foreground">
+              Import content from various sources like text, PDFs, images, code files, and voice recordings to quickly transform them into visual thought maps.
+            </p>
+          </div>
         </div>
       </div>
     </section>
