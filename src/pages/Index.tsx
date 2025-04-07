@@ -6,8 +6,11 @@ import Canvas from '@/components/Canvas';
 import Features from '@/components/Features';
 import DemoVideo from '@/components/DemoVideo';
 import Footer from '@/components/Footer';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  
   // Smooth scroll behavior for anchor links
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
@@ -32,8 +35,15 @@ const Index = () => {
     };
     
     document.addEventListener('click', handleAnchorClick);
+    
+    // Show welcome toast
+    toast({
+      title: "Welcome to Quantum Mindforge",
+      description: "Explore the future of thought visualization and idea mapping",
+    });
+    
     return () => document.removeEventListener('click', handleAnchorClick);
-  }, []);
+  }, [toast]);
   
   return (
     <div className="min-h-screen flex flex-col">

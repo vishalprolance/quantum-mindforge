@@ -1,5 +1,5 @@
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { PlayCircle, Monitor, BrainCircuit, Network } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,15 @@ const DemoVideo = () => {
   const videoRef = useRef<HTMLDivElement>(null);
   const isInView = useIntersectionObserver(sectionRef, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
   const isVideoInView = useIntersectionObserver(videoRef, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  const handlePlayVideo = () => {
+    setIsPlaying(true);
+    const videoElement = document.getElementById('demo-video') as HTMLVideoElement;
+    if (videoElement) {
+      videoElement.play();
+    }
+  };
   
   return (
     <section 
@@ -44,46 +53,53 @@ const DemoVideo = () => {
             isVideoInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           )}
         >
-          {/* Placeholder for the actual video */}
-          <div className="absolute inset-0 bg-black/10 flex flex-col items-center justify-center text-center p-6">
-            <BrainCircuit size={56} className="text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Quantum Mindforge Demo</h3>
-            <p className="text-muted-foreground max-w-lg mb-6">
-              This demo showcases how to map your thoughts, connect ideas, and discover new insights using our interactive canvas.
-            </p>
-            
-            <Button className="bg-primary hover:bg-primary/90">
-              <PlayCircle size={20} className="mr-2" />
-              Watch Demo
-            </Button>
-            
-            <div className="absolute inset-x-0 bottom-6 flex justify-center space-x-8 text-sm text-muted-foreground">
-              <div className="flex items-center">
-                <Network size={16} className="mr-1.5" />
-                <span>Thought Mapping</span>
-              </div>
-              <div className="flex items-center">
-                <BrainCircuit size={16} className="mr-1.5" />
-                <span>Neural Connections</span>
-              </div>
-              <div className="flex items-center">
-                <Monitor size={16} className="mr-1.5" />
-                <span>Interface Tutorial</span>
+          {!isPlaying ? (
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6">
+              <BrainCircuit size={56} className="text-white mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-white">Quantum Mindforge Demo</h3>
+              <p className="text-white/90 max-w-lg mb-6">
+                This demo showcases how to map your thoughts, connect ideas, and discover new insights using our interactive canvas.
+              </p>
+              
+              <Button 
+                className="bg-white text-primary hover:bg-white/90"
+                onClick={handlePlayVideo}
+              >
+                <PlayCircle size={20} className="mr-2" />
+                Watch Demo
+              </Button>
+              
+              <div className="absolute inset-x-0 bottom-6 flex justify-center space-x-8 text-sm text-white/80">
+                <div className="flex items-center">
+                  <Network size={16} className="mr-1.5" />
+                  <span>Thought Mapping</span>
+                </div>
+                <div className="flex items-center">
+                  <BrainCircuit size={16} className="mr-1.5" />
+                  <span>Neural Connections</span>
+                </div>
+                <div className="flex items-center">
+                  <Monitor size={16} className="mr-1.5" />
+                  <span>Interface Tutorial</span>
+                </div>
               </div>
             </div>
-          </div>
-          
-          {/* Uncomment and use this when you have an actual video */}
-          {/* 
-          <video 
-            className="w-full h-full object-cover"
-            controls
-            poster="/video-thumbnail.jpg"
-          >
-            <source src="/demo-video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          */}
+          ) : (
+            <video 
+              id="demo-video"
+              className="w-full h-full object-cover"
+              controls
+              autoPlay
+              poster="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1280"
+            >
+              {/* For demo purposes, we'll use a sample video */}
+              <source 
+                src="https://assets.mixkit.co/videos/preview/mixkit-drawing-abstract-connect-dots-animation-97-large.mp4" 
+                type="video/mp4" 
+              />
+              Your browser does not support the video tag.
+            </video>
+          )}
         </div>
         
         <div className={cn(

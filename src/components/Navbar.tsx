@@ -1,14 +1,31 @@
 
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  // Check if user is logged in
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      setIsLoggedIn(true);
+      const userData = JSON.parse(user);
+      setUsername(userData.name || userData.email.split('@')[0]);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [location.pathname]);
   
   // Update scroll state
   useEffect(() => {
@@ -25,12 +42,29 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
   
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account"
+    });
+    
+    navigate('/');
+  };
+  
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Features', path: '/#features' },
-    { name: 'How it Works', path: '/#how-it-works' },
-    { name: 'About', path: '/#about' },
+    { name: 'Demo', path: '/#demo' },
+    { name: 'Pricing', path: '/pricing' },
   ];
+  
+  // Add dashboard link if logged in
+  if (isLoggedIn) {
+    navLinks.push({ name: 'Dashboard', path: '/dashboard' });
+  }
   
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === path;
@@ -84,11 +118,28 @@ const Navbar = () => {
           ))}
         </nav>
         
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <Button className="bg-primary text-white hover:bg-primary/90 transition-all duration-300">
-            Get Started
-          </Button>
+        {/* CTA Button or User Menu */}
+        <div className="hidden md:flex items-center space-x-4">
+          {isLoggedIn ? (
+            <>
+              <span className="text-sm">Hi, {username}</span>
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut size={16} className="mr-2" />
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/signin">
+                <Button variant="ghost">Sign in</Button>
+              </Link>
+              <Link to="/signup">
+                <Button className="bg-primary text-white hover:bg-primary/90 transition-all duration-300">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
         
         {/* Mobile Menu Button */}
@@ -125,10 +176,24 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
-        <div className="mt-6">
-          <Button className="w-full bg-primary text-white hover:bg-primary/90">
-            Get Started
-          </Button>
+        <div className="mt-6 space-y-3">
+          {isLoggedIn ? (
+            <Button className="w-full" variant="outline" onClick={handleLogout}>
+              <LogOut size={18} className="mr-2" />
+              Log out
+            </Button>
+          ) : (
+            <>
+              <Link to="/signin" className="block w-full">
+                <Button variant="outline" className="w-full">Sign in</Button>
+              </Link>
+              <Link to="/signup" className="block w-full">
+                <Button className="w-full bg-primary text-white hover:bg-primary/90">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
