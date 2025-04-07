@@ -13,5 +13,6 @@ interface SpeechRecognitionEvent {
         transcript: string;
       };
     };
+    length: number;
   };
 }
